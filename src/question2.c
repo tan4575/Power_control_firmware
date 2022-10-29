@@ -96,6 +96,7 @@ static void pre_operation(Control_typedef* self)
     printf("pre_operation\n");
 #endif
     self->status = PREOPERATION;
+    self->charging_status = false;
     if (s_bms_control.enable_command)
         state_transition(&s_bms_control,Operational);
 }
@@ -108,6 +109,7 @@ static void Operational(Control_typedef* self)
 #if defined (__DEBUG__)
     printf("Operational\n");
 #endif
+    self->charging_status = true;
     self->status = OPERATION;
 }
 
