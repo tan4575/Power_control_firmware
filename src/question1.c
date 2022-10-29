@@ -99,10 +99,10 @@ static void constant_current(VectTable* self)
 #endif
     /*simple pi control*/
     err_value = (self->control.current_reference - self->control.current_feedback);
-    self->control.p_term_V = self->control.Kp * err_value;
-    self->control.i_term_V += err_value;
+    self->control.p_term_I = self->control.Kp * err_value;
+    self->control.i_term_I += err_value;
 
-    voltage = (self->control.current_reference - self->control.p_term_V - self->control.i_term_V) * RESISTANCE;
+    voltage = (self->control.current_reference - self->control.p_term_I - self->control.i_term_I) * RESISTANCE;
 
     /*control driver*/
     if (self->EPWM1_INT != NULL)
