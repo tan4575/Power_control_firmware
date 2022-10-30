@@ -36,6 +36,7 @@ typedef struct {
     uint8_t     Data[8];
     uint16_t    Length;
     uint32_t    ID;
+    bool        isdata;
 } CAN_msg_typedef;
 
 typedef struct {
@@ -64,6 +65,7 @@ struct Control_typedef {
 /*Private variable*/
 static CAN_msg_typedef * Can_tx;
 static CAN_msg_typedef * Can_rx;
+static CAN_msg_typedef Can_rx_buff;
 static Control_typedef s_bms_control;
 static uint32_t time_ms;
 
@@ -195,11 +197,11 @@ static void control_routine(Control_typedef* self){
                 switch (self->can_obj[i].read_write)
                 {
                 case READ_ONLY:
-                    Can_rx = &self->can_obj[i].Can_rx;
-                    if (CAN_read(Can_rx))
+                    if (Can_rx_buff.isdata)
                     {
                         self->can_obj[i].timeout = 0;
-                        can_read_msg_parse(self,Can_rx);
+                        Can_rx_buff.isdata = false;
+                        can_read_msg_parse(self,&Can_rx_buff);
                     }
                     else
                     {
@@ -254,6 +256,9 @@ void CAN_write_handler(void){
 
 void CAN_read_handler(void){
     //CAN tx
+    CAN_msg_typedef * msg;
+    msg = &Can_rx_buff;
+    if (CAN_read(msg)) {Can_rx_buff.isdata = true;}
 }
 
 /**
